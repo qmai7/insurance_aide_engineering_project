@@ -1,4 +1,4 @@
-# Insurance Data + AI Engineering Project — Gold Zone Design & Implementation (02)
+# Insurance Data + AI Engineering Project - Part 1
 
 This is a small but production-style insurance data platform. It runs locally with
 Docker Compose, but the architecture mirrors a real company: a lakehouse Silver
