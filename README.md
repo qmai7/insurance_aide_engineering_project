@@ -7,8 +7,7 @@ orchestration, and governance/lineage.
 
 This document is structured to follow the 02 deliverable coverage: goal setup,
 dimension/fact/OBT design, refresh & data quality, feature store, the full data
-pipeline plan, and warehouse optimization. It describes **what is actually built
-in this repo today**, and is explicit about coursework simplifications.
+pipeline plan, and warehouse optimization.
 
 ---
 
