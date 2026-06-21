@@ -138,7 +138,6 @@ services:
       - "9000:9000"
     volumes:
       - clickhouse_data:/var/lib/clickhouse
-      - ./sql/init_clickhouse.sql:/docker-entrypoint-initdb.d/init_clickhouse.sql
 
   kafka:
     image: confluentinc/cp-kafka:7.6.1

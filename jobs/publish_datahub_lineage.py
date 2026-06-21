@@ -43,36 +43,20 @@ ENV = os.getenv("DATAHUB_ENV", "PROD")
 AIRFLOW_DAG_ID = "insurance_batch_bronze_silver_gold"
 AIRFLOW_UI_URL = os.getenv("AIRFLOW_UI_URL", "http://localhost:8080")
 
-
-def dataset_urn(platform: str, name: str) -> str:
+# the naming helper
+def dataset_urn(platform: str, name: str) -> str: 
     return make_dataset_urn(platform=platform, name=name, env=ENV)
 
+# register a dataset's descriptive metadata (name, description) in DataHub.
+def emit_dataset_properties(emitter: DatahubRestEmitter,urn: str,name: str,description: str,) -> None: 
+    aspect = DatasetPropertiesClass(name=name,description=description,)
 
-def emit_dataset_properties(
-    emitter: DatahubRestEmitter,
-    urn: str,
-    name: str,
-    description: str,
-) -> None:
-    aspect = DatasetPropertiesClass(
-        name=name,
-        description=description,
-    )
-
-    mcp = MetadataChangeProposalWrapper(
-        entityUrn=urn,
-        aspect=aspect,
-    )
-
+    mcp = MetadataChangeProposalWrapper(entityUrn=urn,aspect=aspect)
     emitter.emit(mcp)
     print(f"Published dataset properties: {urn}")
 
-
-def emit_lineage(
-    emitter: DatahubRestEmitter,
-    downstream_urn: str,
-    upstream_urns: list[str],
-) -> None:
+# drawing the arrows between datasets
+def emit_lineage(emitter: DatahubRestEmitter,downstream_urn: str,upstream_urns: list[str],) -> None:
     upstreams = [
         UpstreamClass(
             dataset=upstream_urn,
@@ -83,15 +67,12 @@ def emit_lineage(
 
     aspect = UpstreamLineageClass(upstreams=upstreams)
 
-    mcp = MetadataChangeProposalWrapper(
-        entityUrn=downstream_urn,
-        aspect=aspect,
-    )
+    mcp = MetadataChangeProposalWrapper(entityUrn=downstream_urn,aspect=aspect)
 
     emitter.emit(mcp)
     print(f"Published lineage: {upstream_urns} -> {downstream_urn}")
 
-
+# registering the DAG itself 
 def emit_data_flow(emitter: DatahubRestEmitter, flow_urn: str, name: str, description: str) -> None:
     """Register the Airflow DAG itself so 'Airflow' shows up as an orchestrator/platform."""
     aspect = DataFlowInfoClass(
@@ -168,10 +149,7 @@ def main() -> None:
     dim_date = dataset_urn("clickhouse", "gold_insurance.dim_date")
     fact_claims = dataset_urn("clickhouse", "gold_insurance.fact_claims")
     fact_payment_attempts = dataset_urn("clickhouse", "gold_insurance.fact_payment_attempts")
-    obt_claims_enriched = dataset_urn(
-        "clickhouse",
-        "gold_insurance.obt_claims_enriched",
-    )
+    obt_claims_enriched = dataset_urn("clickhouse","gold_insurance.obt_claims_enriched")
     feat_customer_90d = dataset_urn("clickhouse", "gold_insurance.feat_customer_90d")
 
     datasets = {

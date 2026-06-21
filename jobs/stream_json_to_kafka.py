@@ -15,6 +15,7 @@ from kafka import KafkaProducer
 BASE_DIR = Path(__file__).resolve().parents[1]
 EVENT_FILE = BASE_DIR / "generated_insurance_data" / "streaming" / "insurance_events.jsonl"
 
+# Create a Kafka producer that can send JSON-serialized messages to our local Kafka cluster.
 producer = KafkaProducer(
     # Inside Docker Compose, services talk to Kafka through kafka:29092.
     bootstrap_servers="kafka:29092",
